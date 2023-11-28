@@ -16,6 +16,7 @@ from PyQt5.QtWidgets import (
     QMessageBox
 )
 
+
 openai.api_key = Constants.API_KEY
 
 class MainWindow(QWidget):
@@ -112,20 +113,23 @@ class MainWindow(QWidget):
         self.submit_button.clicked.connect(self.get_answer)
 
     def get_answer(self):
+        
+        
         try:
             question = self.input_field.text()
 
-            completion = openai.chat.completions.create(
+            response = openai.chat.completions.create(
                 model='gpt-3.5-turbo-1106',
-                messages=[{"role": "user", "content": "You are very knowledgeable in sports, dating life, tips, and fun facts. Answer the following questions in a concise way, limit it to no more than 4 sentences. Use bullet points if needed."},
+                messages=[{"role": "system", "content": "You are very knowledgeable in sports, dating life, tips, and fun facts. Answer the following questions in a concise way, limit it to no more than 4 sentences. Use bullet points sometimes if you feel the need but don't limit yourself to it unnecessarily."},
                           {"role": "user", "content": f'{question}'}],
-                max_tokens=1024,
+                max_tokens= 250,
                 n=1,
                 stop=None,
-                temperature=0.7,
+                temperature=0.5,
+                #stream = True
             )
 
-            answer = completion.choices[0].message.content
+            answer = response.choices[0].message.content
 
             self.answer_field.setText(answer)
 
